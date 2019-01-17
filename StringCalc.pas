@@ -1,3 +1,9 @@
+(*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Contains useful classed which implement useful strings operations
+  Author: Uskov Boris Sergeevich
+  Created: 14.04.2012
+*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*)
+
 unit StringCalc;
 
 interface
@@ -21,7 +27,6 @@ type
    LatinAlphavit:set of Char= ['A'..'Z'];
 implementation
 
-//Преобразование в нижний регистр с учетом русских символов
    class function  TStringCalculator.RussianLowerCase(Source:Char):Char;
    begin
      if (Source in LatinAlphavit)  then
@@ -40,7 +45,6 @@ implementation
               Result:=Source;
    end;
 
-//Преобразование в верхний регистр с учетом русских символов
    class function  TStringCalculator.RussianUpperCase(Source:char):char;
    begin
    if (Source in LatinAlphavit)  then
@@ -58,7 +62,6 @@ implementation
 
    end;
 
-//Инвертирует строку
  class function  TStringCalculator.Reverse(Source:String):String;
    var
     I:Word;
@@ -75,7 +78,6 @@ implementation
        Result:=Concat(Result,Source[Length(Source)-I+1]);
    end;
 
-//Разбиение строки на массив по символу Delimeter
 class function TStringCalculator.Split(Source:String; Delimeter:char):TArr;
 var
 Poz,I:Byte;
@@ -92,7 +94,6 @@ Begin
 
 End;
 
-//Удаление из строки лидирующих пробелов
 class Function TStringCalculator.TrimLeft(Str:String):String;
 var I:Byte;
 const StartPos=1;
@@ -104,7 +105,6 @@ Begin
  Result:=Str;
 End;
 
-//Удаление из строки лидирующих пробелов
 class Function TStringCalculator.TrimRight(Str:String):String;
 var FinishPos:Byte;
 Begin
@@ -117,7 +117,6 @@ FinishPos:=Length(Str);
  Result:=Str;
 End;
 
-//Удаление из строки лидирующих и концевых пробелов
 class Function TStringCalculator.Trim(Str:String):String;
 Begin
  Result:=TrimRight(TrimLeft(Str));

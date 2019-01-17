@@ -1,20 +1,19 @@
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                    Библиотека классов работы со списками
-                    Разработчик: Усков Б. С.
-                    Дата разработки: 14.04.2012
+  Contains useful classed which implement different types of list data structures
+  Author: Uskov Boris Sergeevich
+  Created: 14.04.2012
 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*)
 unit ListClasses;
 
 interface
 uses Classes,SysUtils;
 type
-//Обыкновенный массив
 TArray=array of Variant;
-//Агрегатная функция
+
 TAgregate=function(Value1,Value2:Variant):Variant;
-//Обрабатывающая функция
+
 TProcess=function(Value:Variant):Variant;
-//Элемент списка
+
 PArrayListElem=^TArrayListElem;
 TArrayListElem = record
   Data:Variant;
@@ -24,7 +23,6 @@ end;
 
 PArrayList=^ArrayList;
 
-//Баозовый класс всех коллекций
 TCollection = class
 private
    function GetCount:LongWord;virtual;abstract;
@@ -69,7 +67,6 @@ TCommpnListClass = class(TCollection)
    destructor Destroy;
 end;
 
-//Линейный однонаправленный список
 ArrayList=class(TCommpnListClass)
   private
    function GetCount:LongWord;override;
@@ -90,7 +87,6 @@ ArrayList=class(TCommpnListClass)
    constructor Create;
 end;
 
-//Линейный двунаправленный список
 TwoLinksArrayList=class(TCommpnListClass)
   private
    function GetCount:LongWord;override;
@@ -114,7 +110,7 @@ TwoLinksArrayList=class(TCommpnListClass)
 end;
 
 implementation
-//-----------------------------Базовый класс списков----------------------------
+
 constructor TCommpnListClass.Create;
 begin
    Head:=nil;
@@ -122,14 +118,12 @@ begin
    innerCurrent:=nil;
 end;
 
-//Возвращает текущий элемент списка
 function TCommpnListClass.GetCurrent:Variant;
 begin
  if Self.innerCurrent<>nil then
   Result:=Self.innerCurrent^.Data;
 end;
 
-//Удалить элемент со значением Value
 procedure TCommpnListClass.Remove(Value:Variant);
 var
  Temp:PArrayListElem;
@@ -140,7 +134,6 @@ begin
       Self.RemoveAt(Index);
 end;
 
-//Добавить в список целый массив
 procedure TCommpnListClass.AddRange(Arr:TArray);
 var
  I:Integer;
@@ -150,7 +143,6 @@ begin
 
 end;
 
-//Добавить в список целый массив
 procedure TCommpnListClass.AddRange(Arr:TStrings);
 var
  I:Integer;
@@ -169,7 +161,6 @@ while Self.Head<>nil do
 
 end;
 
-//Деструктор для списочных классов
 destructor TCommpnListClass.Destroy;
  var
  I:Integer;
@@ -180,7 +171,6 @@ begin
      Tail:=nil;
 end;
 
-//Проверка, включает ли список элемент со значением Value
 function TCommpnListClass.Contained(Value:Variant):LongBool;
 begin
   if GetElementIndex(Value)<>-1 then
@@ -189,7 +179,6 @@ begin
     Result:=false;
 end;
 
-//Выполняет над всеми элементами списка операцию process
 procedure TCommpnListClass.Processing(process:TProcess);
 var
  I:Integer;
@@ -202,7 +191,6 @@ begin
    end;
 end;
 
-//Выполняет агрегатную функцию agregatefunc для списка
 function TCommpnListClass.Agregate(InitialVal:Variant;agregatefunc:TAgregate):Variant;
 var
  I:Integer;
@@ -212,15 +200,12 @@ begin
       Result:=agregatefunc(Result,Self[I]);
 end;
 
-//-----------------------Односвязанный линейниы список--------------------------
 constructor ArrayList.Create;
 begin
   inherited Create;
 
 end;
 
-//Перейти к предыдущему элементу. Если он есть возвращает true;
-//Если функция ни разу не вызывалась будет возвращен первый элемент
 function ArrayList.MoveSucc:WordBool;
 var
   Temp:PArrayListElem;
@@ -242,7 +227,6 @@ Temp:=Head;
       Result:=false;
 end;
 
-//Перейти к последнему элементу списка
 function ArrayList.MoveLast:WordBool;
 begin
 
@@ -255,7 +239,6 @@ else
       Result:=false;
 end;
 
-//Добвить новый элемент в список
 procedure ArrayList.Add(NewItem:Variant);
 var
  Temp:PArrayListElem;
@@ -290,7 +273,6 @@ Temp:=Head;
       Result:=Count;
 end;
 
-//Получить элемент под номером index
 function ArrayList.Get(index:integer):Variant;
 var
  Temp:PArrayListElem;
@@ -315,7 +297,6 @@ Counter:=0;
 
 end;
 
-//Получить из списка массив
 function ArrayList.GetArray:TArray;
 begin
 if Self.MoveLast then
@@ -331,7 +312,6 @@ if Self.MoveLast then
   end;
 end;
 
-//Установить значение для элемента под номером index
 procedure ArrayList.SetVal(index:integer;NewValue:Variant);
 var
  Temp:PArrayListElem;
@@ -356,7 +336,6 @@ Counter:=0;
 
 end;
 
-//Удалить элемент под номером index
 procedure ArrayList.RemoveAt(index:integer);
 var
  Temp,Tmp:PArrayListElem;
@@ -384,7 +363,7 @@ begin
                    Dispose(Tmp);
                end
            else
-              begin  //Удаление головы списка
+              begin
                  Tmp:=Head;
                  Head:=Head^.Next;
                  Dispose(Tmp);
@@ -393,8 +372,6 @@ begin
         end;
 end;
 
-//Вернуть индекс элемента
-//-1 если такого элемента нет
 function ArrayList.GetElementIndex(Value:Variant):Integer;
 var
  Temp:PArrayListElem;
@@ -421,7 +398,6 @@ else
 
 end;
 
-//Сортировка списка
 procedure ArrayList.Sort;
 var
  Temp1,Temp2:PArrayListElem;
@@ -429,16 +405,12 @@ begin
 
 end;
 
-//--------------------------Двусвязеый линейный список--------------------------
-//В разработке
 constructor TwoLinksArrayList.Create;
 begin
   inherited Create;
 
 end;
 
-//Перейти к предыдущему элементу. Если он есть возвращает true;
-//Если функция ни разу не вызывалась будет возвращен первый элемент
 function TwoLinksArrayList.MoveSucc:WordBool;
 var
   Temp:PArrayListElem;
@@ -461,8 +433,6 @@ Temp:=Head;
 
 end;
 
-//Перейти к предыдущему элементу. Если он есть возвращает true;
-//Если функция ни разу не вызывалась будет возвращен первый элемент
 function TwoLinksArrayList.MoveNext:WordBool;
 var
   Temp:PArrayListElem;
@@ -485,8 +455,6 @@ Temp:=Tail;
 
 end;
 
-
-//Добвить новый элемент в список
 procedure TwoLinksArrayList.Add(NewItem:Variant);
 var
  Temp:PArrayListElem;
@@ -532,7 +500,6 @@ Temp:=Head;
       Result:=Count;
 end;
 
-//Получить элемент под номером index
 function TwoLinksArrayList.Get(index:integer):Variant;
 var
  Temp:PArrayListElem;
@@ -557,7 +524,6 @@ Counter:=0;
 
 end;
 
-//Установить значение для элемента под номером index
 procedure TwoLinksArrayList.SetVal(index:integer;NewValue:Variant);
 var
  Temp:PArrayListElem;
@@ -582,7 +548,6 @@ Counter:=0;
 
 end;
 
-//Удалить элемент под номером index
 procedure TwoLinksArrayList.RemoveAt(index:integer);
 var
  Temp,Tmp:PArrayListElem;
@@ -613,7 +578,7 @@ begin
                    Dispose(Tmp);
                end
            else
-              begin  //Удаление головы списка
+              begin
                  Tmp:=Head;
                  Head^.Next^.Prev:=nil;
                  Head:=Head^.Next;
@@ -622,8 +587,6 @@ begin
         end;
 end;
 
-//Вернуть индекс элемента
-//-1 если такого элемента нет
 function TwoLinksArrayList.GetElementIndex(Value:Variant):Integer;
 var
  Temp:PArrayListElem;
@@ -650,13 +613,11 @@ else
 
 end;
 
-//Сортировка
 procedure TwoLinksArrayList.Sort;
 begin
 
 end;
 
-//Получить из списка массив
 function TwoLinksArrayList.GetArray:TArray;
 begin
 SetLength(Result,0);
@@ -667,7 +628,6 @@ SetLength(Result,0);
     end;
 end;
 
-//Получить из списка массив в обратной последовательности
 function TwoLinksArrayList.GetArrayReverse:TArray;
 begin
 SetLength(Result,0);
